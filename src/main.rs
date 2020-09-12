@@ -1,5 +1,5 @@
 use clap::clap_app;
-use ghost_to_zola::read_posts_from_file;
+use ghost_to_zola::ghost;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let path = matches.value_of("INPUT").unwrap();
 
-    let posts = read_posts_from_file(path)?;
+    let posts = ghost::read_posts_from_file(path)?;
     println!("Post Title: {}", posts.first().unwrap().created_at);
 
     Ok(())
