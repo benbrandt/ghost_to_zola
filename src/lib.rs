@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use std::error::Error;
 use std::fs::File;
@@ -7,12 +8,13 @@ use std::path::Path;
 #[derive(Debug, Deserialize)]
 pub struct GhostPost {
     pub title: String,
-    slug: String,
-    mobiledoc: String,
-    comment_id: String,
-    feature_image: Option<String>,
-    published_at: Option<String>,
-    r#type: String,
+    pub slug: String,
+    pub mobiledoc: String,
+    pub comment_id: String,
+    pub feature_image: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub published_at: Option<String>,
+    pub r#type: String,
 }
 
 #[derive(Debug, Deserialize)]
