@@ -5,6 +5,7 @@ pub mod ghost {
     use std::fs::File;
     use std::io::BufReader;
     use std::path::Path;
+
     #[derive(Debug, Deserialize)]
     pub struct Card {
         #[serde(default)]
@@ -125,6 +126,10 @@ pub mod zola {
             // Frontmatter
             writeln!(f, "+++")?;
             writeln!(f, "title = \"{}\"", self.title)?;
+            writeln!(f, "slug = \"{}\"", self.slug)?;
+            writeln!(f, "date = {}", self.date.format("%Y-%m-%d"))?;
+            writeln!(f, "updated = {}", self.updated.format("%Y-%m-%d"))?;
+            writeln!(f, "draft = {}", self.draft)?;
             writeln!(f, "+++")?;
             // Body
             writeln!(f, "{}", self.content)
