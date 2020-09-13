@@ -74,6 +74,10 @@ pub mod zola {
     use crate::ghost;
     use chrono::{DateTime, Utc};
     use std::fmt;
+    use std::fs::File;
+    use std::io::prelude::*;
+    use std::path::Path;
+    use std::str;
 
     pub struct Page {
         /// The markdown content of the post
@@ -125,7 +129,7 @@ pub mod zola {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             // Frontmatter
             writeln!(f, "+++")?;
-            writeln!(f, "title = \"{}\"", self.title)?;
+            writeln!(f, "title = \"{}\"", str::replace(&self.title, "\"", "\\\""))?;
             writeln!(f, "slug = \"{}\"", self.slug)?;
             writeln!(f, "date = {}", self.date.format("%Y-%m-%d"))?;
             writeln!(f, "updated = {}", self.updated.format("%Y-%m-%d"))?;
@@ -133,6 +137,30 @@ pub mod zola {
             writeln!(f, "+++")?;
             // Body
             writeln!(f, "{}", self.content)
+        }
+    }
+
+    impl Page {
+        pub fn write_to_file(&self) {
+            let filename = format!(
+                "../myblog/content/{}-{}.md",
+                self.date.format("%Y-%m-%d"),
+                self.slug
+            );
+            let path = Path::new(&filename);
+            let display = path.display();
+
+            // Open a file in write-only mode, returns `io::Result<File>`
+            let mut file = match File::create(&path) {
+                Err(why) => panic!("couldn't create {}: {}", display, why),
+                Ok(file) => file,
+            };
+
+            // Write the `LOREM_IPSUM` string to `file`, returns `io::Result<()>`
+            match file.write_all(&format!("{}", self).as_bytes()) {
+                Err(why) => panic!("couldn't write to {}: {}", display, why),
+                Ok(_) => println!("successfully wrote to {}", display),
+            }
         }
     }
 }
